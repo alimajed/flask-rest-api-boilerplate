@@ -10,6 +10,10 @@ COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
 
+# remove carriage return
+RUN chmod +x start.sh
+RUN sed -i 's/\r$//g' start.sh
+
 # add new user and make it as default user 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
