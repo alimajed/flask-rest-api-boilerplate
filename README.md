@@ -1,6 +1,8 @@
 # flask-rest-api-boilerplate
 this is a simple project that can be used as a **boilerplate** of the rest API projects using flask
 
+<br><br>
+
 ## Create a Simple REST API endpoint
 * create file ***app.py** and paste this code into it
     ```
@@ -19,7 +21,9 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     * ```flask run```
 * This is our first step
 
-## Dockerize Flask App
+<br>
+
+## [Dockerize Flask App](https://www.docker.com/)
 * create file **Dockerfile** and paste this code into it
     ```
     FROM python:3.10.4-alpine
@@ -58,7 +62,9 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     * *-p* publish ports "host:container"
     * *-v* bind mount a volume
 
-## Docker Compose
+<br>
+
+## [Docker Compose](https://docs.docker.com/compose/)
 * Compose is a tool for defining and running multi-container Docker applications
 * Now we have only one container, it may not make much difference
 * but yet, in the **docker-compose.yml** file we will create we can put variables and volumes in a way to simplify **Dockerfile** and the command *docker run*, especially when our app will expand in the coming steps
@@ -84,3 +90,68 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     ```
     docker-compose up
     ```
+
+<br>
+
+## [Application Factory Pattern](https://flask.palletsprojects.com/en/2.1.x/patterns/appfactories/)
+* an enterprise flask application needs multiple configuration environments, many blueprints (modules) to be registered, adding databases and other packages
+* using the simple flask application to init the app might not be the best solution
+* here comes the factory pattern
+    * the app can modularized and organized
+    * easy setup to handle multiple environments
+
+<br>
+
+## Implementing Application Factory Pattern
+* create a folder **app** with a file **__init__.py** in it
+* this init file will contain ***init_app*** or ***create_app***
+* inside this function we will handle blueprints (and other packages) registration
+* after the setup is done, the function will return the ***app*** object
+* simple application factory will look like this
+    ```
+    from flask import Flask
+
+    from config import ConfigFactory
+
+
+    def init_app():
+        app = Flask(__name__)
+        app.config.from_object(ConfigFactory.factory().__class__)
+
+        with app.app_context():
+            # import blueprints
+            from app.home.views import home_bp
+
+            # register blueprints
+            app.register_blueprint(home_bp, url_prefix="/api/home")
+
+            return app
+    ```
+* in the project root we will create **config.py** and it will be our config factory
+* the config factory will load the configuration of which environment we want to run
+* passing an argument to **FLASK_APP** or defining a **FLASK_ENV** will help
+* the code inside the config factory will look like
+    ```
+    from os import getenv
+
+
+    class ConfigFactory:
+        def factory():
+            env = getenv("FLASK_ENV", "development")
+
+            if env in ["development"]:
+                return Development()
+
+        factory = staticmethod(factory)
+
+
+    class Config:
+        """base config class contains common configurations in all environments"""
+        pass
+
+    class Development(Config):
+        DEBUG = True
+        TESTING = False
+    ```
+    * the config factory has a base config class containing all common configurations between the environment
+    * we can add class as much as we have a different environment, by inheriting from the base config class
