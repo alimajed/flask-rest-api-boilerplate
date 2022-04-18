@@ -155,3 +155,66 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     ```
     * the config factory has a base config class containing all common configurations between the environment
     * we can add class as much as we have a different environment, by inheriting from the base config class
+
+<br>
+
+## Database and Docker for Development
+* before heading to implement the database part, let's talk about the main feature of this project 
+* this project offers a 100% docker for the development environment
+* you don't need to download and install any database server or database management tools or any other tools (like Redis for example)
+* you only need docker to be installed on your machine and run 2 commands to make your environment ready
+    * `docker-compose build`
+    * `docker-compose up`
+* in this project we are using only alpine images because it is the most lightweight images
+
+<br>
+
+## Adding Postgres
+* to add postgres database to our environment, we need to create a new image (service) in our docker-compose file
+    ```
+    postgres:
+        image: postgres:alpine
+        container_name: postgres
+        networks:
+            - default
+        env_file:
+        - ./.envs/postgres.env
+        ports:
+            - 5432:5432
+        restart: on-failure:5
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+    ```
+    * we are using the official postgres alpine image, but we can build our custom image via a new docker file for postgres image
+    * load the environment variables for postgres image via a file ***./.envs/postgres.env*** using **env_file** keyword
+* we need to create a volume object for postgres data, so put it under volumes
+    ```
+    volumes:
+        pgadmin_data: {}
+    ```
+
+<br>
+
+## Adding PGAdmin
+* to add postgres database to our environment, we need to create a new image (service) in our docker compose file
+    ```
+    pg-admin:
+        image: dpage/pgadmin4
+        container_name: pgadmin
+        networks:
+            - default
+        env_file:
+        - ./.envs/pgadmin.env
+        ports:
+            - 5050:80
+        logging:
+        driver: none
+        restart: on-failure:5
+    ```
+    * we are using the official pgadmin alpine image, but we can build our custom image via a new docker file for pgadmin image
+    * load the environment variables for pgadmin image via a file ***./.envs/pgadmin.env*** using **env_file** keyword
+* we need to create a volume object for pgadmin data, so put it under volumes
+    ```
+    volumes:
+        pgadmin_data: {}
+    ```
