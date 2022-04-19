@@ -8,6 +8,10 @@ services:
   flask:
     build: .
     container_name: flask
+    env_file:
+      - ./.envs/postgres.env
+    depends_on:
+      - postgres
     ports:
       - "5000:5000"
     volumes:
@@ -31,6 +35,8 @@ services:
         - default
     env_file:
       - ./.envs/pgadmin.env
+    depends_on:
+      - postgres
     ports:
         - 5050:80
     logging:

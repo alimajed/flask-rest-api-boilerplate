@@ -13,8 +13,9 @@ class ConfigFactory:
 
 class Config:
     """base config class contains same configurations in all environments"""
-    pass
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class Development(Config):
     DEBUG = True
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URI")
