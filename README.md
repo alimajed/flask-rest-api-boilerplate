@@ -1,5 +1,5 @@
 # flask-rest-api-boilerplate
-this is a simple project that can be used as a **boilerplate** of the rest API projects using flask
+this is a simple project that can be used as a **boilerplate** of the rest API projects using [flask](https://flask.palletsprojects.com/en/2.1.x/)
 
 <br><br>
 
@@ -17,7 +17,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 * to run the app, first you need to export multiple variables, so open your terminal
     * ```export FLASK_ENV=development```
     * ```export FLASK_APP=app```
-* run the app 
+* run the app
     * ```flask run```
 * This is our first step
 
@@ -159,7 +159,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 <br>
 
 ## Database and Docker for Development
-* before heading to implement the database part, let's talk about the main feature of this project 
+* before heading to implement the database part, let's talk about the main feature of this project
 * this project offers a 100% docker for the development environment
 * you don't need to download and install any database server or database management tools or any other tools (like Redis for example)
 * you only need docker to be installed on your machine and run 2 commands to make your environment ready
@@ -218,3 +218,92 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     volumes:
         pgadmin_data: {}
     ```
+
+<br>
+
+## Adding Database Required Packages
+* [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) is a Flask extension that adds support to [SQLAlchemy](https://www.sqlalchemy.org/) the best common ORM used in Flask application
+* [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/) is a flask extension to handle database migrations
+* since we are using the PostgreSQL database, [Psycopg2](https://www.psycopg.org/) is the most popular PostgreSQL database adapter for the Python programming language
+
+## Dockerfile modifications
+* some packages are required to be installed on the image to build **psycopg2**
+* we add the following to the **Dockerfile**
+    ```
+    # add packages for psycopg2
+    RUN apk update && apk upgrade
+    # RUN apk add --no-cache libpq-dev gcc
+    RUN apk add --no-cache postgresql-libs && \
+    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
+    ```
+
+## Adding Database Configuration
+* we have created a new ***database.py*** in the app directory that will contain the database configuration
+* we import flask-sqlalchemy and flask-migrate installed package to **__init__.py** file and we initialize them
+    ```
+    # init extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    ```
+* **DATABASE_URI** variable need to be exported so that the flask app will connect to the database
+    ```
+    export DATABASE_URI="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+    ```
+* sqlalchemy will search by default for a variable called **SQLALCHEMY_DATABASE_URI**, so we add this variable to **config.py**
+    ```
+    SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URI")
+    ```
+
+## Adding User Module
+* we mentioned above that the factory pattern helps to modularize the application structure
+* the ***app*** directory will conatains different coded modules of the project
+* we assume that each module/package will be registered to a blueprint and contains such files like
+    * **views.py**
+    * **models.py**
+* first we create the **common module** that will contain code imported in different modules
+    * inside this module we create **db_model_base.py** containing the abstract base model inherited from SQLalchemy DB model
+        ```
+        class BaseModel(db.Model):
+            __abstract__ = True
+
+            id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+            created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone("UTC")))
+            updated_at = db.Column(db.DateTime(timezone=True), nullable=True)
+        ```
+    * flask-migrate will know that classes that inherit SQLalchemy DB model are database models (tables)
+    * the base model contains the columns that we want to be in all our application database models
+    * any new models in other modules should inherit this base model class
+* we have created a new module/package **user** and we add the ***UserModel***
+    ```
+    class UserModel(BaseModel):
+        __tablename__ = "user"
+
+        first_name = Column(String(100), nullable=False)
+        last_name = Column(String(100), nullable=False)
+        date_of_birth = Column(Date, nullable=False)
+        email = Column(String(100), nullable=False, unique=True)
+        password = Column(String(300), nullable=False)
+    ```
+
+<br>
+
+## Database Migrations
+* to init database migrations process we run (only once)
+    ```
+    docker-compose run --rm flask flask db init
+    ```
+* this command will create ***migrations/*** folder that contains migrations files
+* if the new changes to our database have new database models, we should import them inside **env.py** under
+    ```
+    # add your model's MetaData object here
+    # for 'autogenerate' support
+    # from myapp import mymodel
+    from app.user.models import UserModel
+    ```
+* to collect new changes to be applied to our database we run
+    ```
+    docker-compose run --rm flask flask db migrate
+    ```
+* finally we update our **start.sh** entry-point file to run `flask db upgrade` once we run our application
+    * this command will look for database changes not applied to the database and will apply them
+    * the database then will have the latest changes (if exist)
