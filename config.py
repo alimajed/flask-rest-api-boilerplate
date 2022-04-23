@@ -19,3 +19,4 @@ class Development(Config):
     DEBUG = True
     TESTING = False
     SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URI")
+    JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")

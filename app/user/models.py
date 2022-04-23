@@ -2,7 +2,7 @@ from sqlalchemy import Column
 from sqlalchemy.types import Date, String
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.common.db_model_base import BaseModel
+from app.common.models import BaseModel
 
 
 class UserModel(BaseModel):

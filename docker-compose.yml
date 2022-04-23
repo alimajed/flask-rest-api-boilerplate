@@ -9,6 +9,7 @@ services:
     build: .
     container_name: flask
     env_file:
+      - ./.envs/flask.env
       - ./.envs/postgres.env
     depends_on:
       - postgres

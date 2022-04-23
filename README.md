@@ -258,8 +258,11 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 * we mentioned above that the factory pattern helps to modularize the application structure
 * the ***app*** directory will conatains different coded modules of the project
 * we assume that each module/package will be registered to a blueprint and contains such files like
-    * **views.py**
-    * **models.py**
+    * **view.py** file contains the api routes
+    * **schemas.py** contains the request serialization and deserialization
+    * **models.py** contains the database models
+    * **daos.py** *data access object* contains the business logic and this is the layer where we connect and fetch data to/from database
+    * **tests.py** contains the tests of the module
 * first we create the **common module** that will contain code imported in different modules
     * inside this module we create **db_model_base.py** containing the abstract base model inherited from SQLalchemy DB model
         ```
@@ -283,6 +286,39 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
         date_of_birth = Column(Date, nullable=False)
         email = Column(String(100), nullable=False, unique=True)
         password = Column(String(300), nullable=False)
+    ```
+
+<br>
+
+## API Request Serialization and Deserialization
+* for serialization and deserialization we install two libraries
+    * [flask-marhmallow](https://flask-marshmallow.readthedocs.io/en/latest/)
+    * [marshmallow-sqlalchemy](https://marshmallow-sqlalchemy.readthedocs.io/en/latest/)
+* in **common** module we create 2 base schema models
+    * base model for database model
+        ```
+        class BaseModelSchema(SQLAlchemyAutoSchema):
+
+        class Meta:
+            sqla_session = Session
+            load_instance = True
+
+        ```
+        * this model inherits the **marshmallow-sqlalchemy**'s **SQLAlchemyAutoSchema** that allows converting the object to model instance after deserialization after setting *load_instance* to True
+            ```
+            user_json = request.get_json()
+            user = user_schema.load(user_json)
+            ```
+    * custom base model
+* to use marshmallow extensions in our app we have to intialize them in the app root file
+    ```
+    marshmallow.init_app(app)
+    ```
+* also we can add a global handler for marshmallow failed validation to return the detailed error message
+    ```
+    @app.errorhandler(ValidationError)
+    def handle_marshmallow_validation(err):
+        return jsonify(err.messages), 400
     ```
 
 <br>
