@@ -13,7 +13,9 @@ class ConfigFactory:
 
 class Config:
     """base config class contains same configurations in all environments"""
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 class Development(Config):
     DEBUG = True

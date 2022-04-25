@@ -1,11 +1,10 @@
 from marshmallow import fields
 
-from app.common.schemas import BaseModelSchema, BaseCustomSchema
 from app.user.models import UserModel
+from app.common.schemas import BaseModelSchema, BaseCustomSchema
 
 
 class UserSchema(BaseModelSchema):
-
     class Meta(BaseModelSchema.Meta):
         model = UserModel
         load_only = ("password",)

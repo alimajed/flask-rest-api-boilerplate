@@ -1,12 +1,12 @@
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_marshmallow import Marshmallow
 from marshmallow import ValidationError
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 
-from app.database import metadata
 from config import ConfigFactory
+from app.database import metadata
 
 
 db = SQLAlchemy(metadata=metadata)

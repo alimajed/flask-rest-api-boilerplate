@@ -343,3 +343,12 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 * finally we update our **start.sh** entry-point file to run `flask db upgrade` once we run our application
     * this command will look for database changes not applied to the database and will apply them
     * the database then will have the latest changes (if exist)
+
+<br>
+
+## Code Linting
+* for automated checking of source code for programmatic and stylistic errors, we are using:
+    * [**black**](https://github.com/psf/black) python code formatter
+    * [**isort**](https://github.com/PyCQA/isort) python library to sort imports alphabetically, and automatically separated into sections and by type
+    * [**flake8**](https://github.com/PyCQA/flake8) toolkit for checking your code base against coding style (PEP8)
+* these checks should be ran before commits, we use [**pre-commit**](https://pre-commit.com/) as a multi-language package manager for pre-commit hooks

@@ -1,7 +1,3 @@
-
-
-from sqlalchemy.exc import SQLAlchemyError
-
 from app import db
 
 
