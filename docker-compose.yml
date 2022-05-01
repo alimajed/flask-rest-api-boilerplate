@@ -17,6 +17,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/app
+    restart: on-failure
   postgres:
     image: postgres:alpine
     container_name: postgres
@@ -29,6 +30,7 @@ services:
     restart: on-failure:5
     volumes:
         - postgres_data:/var/lib/postgresql/data
+        - ./pg-init-scripts:/docker-entrypoint-initdb.d
   pg-admin:
     image: dpage/pgadmin4
     container_name: pgadmin

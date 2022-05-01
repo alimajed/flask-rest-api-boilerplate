@@ -20,6 +20,8 @@ RUN apk --purge del .build-deps
 # remove carriage return
 RUN chmod +x start.sh
 RUN sed -i 's/\r$//g' start.sh
+RUN chmod +x wait_for_postgres.py
+RUN sed -i 's/\r$//g' wait_for_postgres.py
 
 # add new user and make it as default user
 RUN addgroup -S appgroup && adduser -D appuser -G appgroup
