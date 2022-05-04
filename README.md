@@ -346,6 +346,17 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 
 <br>
 
+## Wait for Postgres
+* in **docker-compose.yml** file we notice that service *flask* depends on *Postgres*
+* in some cases, especially if we run the project for the first time or we run database migrations, the database could not be created yet, and *flask* service will throw an error
+* **there is a difference between service Postgres is up and the required databases are created**
+* in our project we have 2 databases, one for development and the other for testing, to isolate the testing environment
+* let's say that our project depends on more than 2 databases, the time of creation will be longer, and putting a constant time to wait is not an ideal solution, it should be dynamic
+* installing new packages in the *flask* service (image) like Postgres-client is also not preferable since we want to keep our image light-weight as much as we can
+* here comes the **wait_for_postgres.py** that we call at an early stage during the initialization of the *flask* service (container) that check if the database (or the main one) is created, then we continue to process the entry point steps
+
+<br>
+
 ## Code Linting
 * for automated checking of source code for programmatic and stylistic errors, we are using:
     * [**black**](https://github.com/psf/black) python code formatter
