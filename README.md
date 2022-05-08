@@ -363,3 +363,16 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     * [**isort**](https://github.com/PyCQA/isort) python library to sort imports alphabetically, and automatically separated into sections and by type
     * [**flake8**](https://github.com/PyCQA/flake8) toolkit for checking your code base against coding style (PEP8)
 * these checks should be ran before commits, we use [**pre-commit**](https://pre-commit.com/) as a multi-language package manager for pre-commit hooks
+
+<br>
+
+## Code Test
+* we use a second database to isolate the testing environment completely from the development environment *DATABASE_TEST_URI*
+* to run all tests
+    ```
+    docker-compose run --rm flask test
+    ```
+* to get the coverage report
+    ```
+    docker-compose run --rm flask coverage report
+    ```
