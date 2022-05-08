@@ -1,0 +1,37 @@
+name: CI
+
+# to speed up image building
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10
+      - name: Install and Run Pre-commit
+        uses: pre-commit/action@v2.0.3
+
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+      - name: Build the Stack
+        run: docker-compose building
+      - name: Create DB Migrations
+        run: |
+          docker-compose run --rm flask flask db init
+          docker-compose run --rm flask flask db migrate
+      - name: Run Tests
+        run: docker-compose run --rm flask test
