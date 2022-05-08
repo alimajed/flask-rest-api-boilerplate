@@ -31,7 +31,7 @@ jobs:
         run: docker-compose build
       - name: Create DB Migrations
         run: |
-          docker-compose run --rm flask flask db init
-          docker-compose run --rm flask flask db migrate
+          sudo docker-compose run --rm flask flask db init
+          sudo docker-compose run --rm flask flask db migrate
       - name: Run Tests
-        run: docker-compose run --rm flask test
+        run: sudo docker-compose run --rm flask test
