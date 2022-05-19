@@ -1,3 +1,5 @@
+[![CI](https://github.com/alimajed/flask-rest-api-boilerplate/actions/workflows/ci.yml/badge.svg)](https://github.com/alimajed/flask-rest-api-boilerplate/actions/workflows/ci.yml)
+
 # flask-rest-api-boilerplate
 this is a simple project that can be used as a **boilerplate** of the rest API projects using [flask](https://flask.palletsprojects.com/en/2.1.x/)
 

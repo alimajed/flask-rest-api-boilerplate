@@ -12,8 +12,8 @@ RUN mkdir /app
 WORKDIR /app
 
 # copy files and install requirements
-COPY ./requirements.txt requirements.txt
-RUN pip install --no-cache -r requirements.txt
+COPY ./requirements requirements
+RUN pip install --no-cache -r requirements/development.txt
 COPY . .
 RUN apk --purge del .build-deps
 
