@@ -6,6 +6,8 @@ class ConfigFactory:
         env = getenv("FLASK_ENV", "development")
         if env in ["development"]:
             return Development()
+        elif env in ["production"]:
+            return Production()
         elif env in ["testing"]:
             return Testing()
 
@@ -17,12 +19,17 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URI")
 
 
 class Development(Config):
     DEBUG = True
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URI")
+
+
+class Production(Config):
+    DEBUG = False
+    TESTING = False
 
 
 class Testing(Config):
