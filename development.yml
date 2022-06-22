@@ -6,11 +6,13 @@ volumes:
 
 services:
   flask:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-development
     container_name: flask
     env_file:
-      - ./.envs/flask.env
-      - ./.envs/postgres.env
+      - ./.envs/.development/flask
+      - ./.envs/.development/postgres
     depends_on:
       - postgres
     ports:
@@ -24,7 +26,7 @@ services:
     networks:
         - default
     env_file:
-      - ./.envs/postgres.env
+      - ./.envs/.development/postgres
     ports:
         - 5432:5432
     restart: on-failure:5
@@ -37,7 +39,7 @@ services:
     networks:
         - default
     env_file:
-      - ./.envs/pgadmin.env
+      - ./.envs/.development/pgadmin
     depends_on:
       - postgres
     ports:

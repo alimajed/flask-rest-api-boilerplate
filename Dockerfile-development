@@ -18,8 +18,8 @@ COPY . .
 RUN apk --purge del .build-deps
 
 # remove carriage return
-RUN chmod +x start.sh
-RUN sed -i 's/\r$//g' start.sh
+RUN chmod +x run-development.sh
+RUN sed -i 's/\r$//g' run-development.sh
 RUN chmod +x wait_for_postgres.py
 RUN sed -i 's/\r$//g' wait_for_postgres.py
 
@@ -32,4 +32,4 @@ EXPOSE 5000
 
 RUN ls -ln
 
-ENTRYPOINT ["sh", "/app/start.sh" ]
+ENTRYPOINT ["sh", "/app/run-development.sh" ]

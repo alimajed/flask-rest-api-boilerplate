@@ -44,7 +44,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
 
     RUN ls -ln
 
-    ENTRYPOINT ["sh", "/app/start.sh" ]
+    ENTRYPOINT ["sh", "/app/run-development.sh" ]
     ```
     * **WORKDIR** command is to tell Docker the default app directory and no need to specify it in other commands, only put **.**
     * **COPY** command to copy files from source to destination
@@ -180,7 +180,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
         networks:
             - default
         env_file:
-        - ./.envs/postgres.env
+        - ./.envs/.development/postgres.env
         ports:
             - 5432:5432
         restart: on-failure:5
@@ -188,7 +188,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
             - postgres_data:/var/lib/postgresql/data
     ```
     * we are using the official postgres alpine image, but we can build our custom image via a new docker file for postgres image
-    * load the environment variables for postgres image via a file ***./.envs/postgres.env*** using **env_file** keyword
+    * load the environment variables for postgres image via a file ***./.envs/.development/postgres.env*** using **env_file** keyword
 * we need to create a volume object for postgres data, so put it under volumes
     ```
     volumes:
@@ -214,7 +214,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
         restart: on-failure:5
     ```
     * we are using the official pgadmin alpine image, but we can build our custom image via a new docker file for pgadmin image
-    * load the environment variables for pgadmin image via a file ***./.envs/pgadmin.env*** using **env_file** keyword
+    * load the environment variables for pgadmin image via a file ***./.envs/.development/pgadmin.env*** using **env_file** keyword
 * we need to create a volume object for pgadmin data, so put it under volumes
     ```
     volumes:
@@ -342,7 +342,7 @@ this is a simple project that can be used as a **boilerplate** of the rest API p
     ```
     docker-compose run --rm flask flask db migrate
     ```
-* finally we update our **start.sh** entry-point file to run `flask db upgrade` once we run our application
+* finally we update our **run-development.sh** entry-point file to run `flask db upgrade` once we run our application
     * this command will look for database changes not applied to the database and will apply them
     * the database then will have the latest changes (if exist)
 
