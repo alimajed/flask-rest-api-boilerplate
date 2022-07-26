@@ -4,12 +4,13 @@ from os import getenv
 class ConfigFactory:
     def factory():
         env = getenv("FLASK_ENV", "development")
-        if env in ["development"]:
+        is_testing = getenv("IS_TESTING", None)
+        if env in ["development"] and is_testing:
+            return Testing()
+        elif env in ["development"]:
             return Development()
         elif env in ["production"]:
             return Production()
-        elif env in ["testing"]:
-            return Testing()
 
     factory = staticmethod(factory)
 

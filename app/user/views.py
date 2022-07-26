@@ -19,7 +19,7 @@ update_user_schema = UpdateUserSchema()
 user_schema = UserSchema()
 
 
-@user_bp.route("/", methods=["POST"])
+@user_bp.route("", methods=["POST"])
 def create_user():
     user_json = request.get_json()
     user = user_schema.load(user_json)
@@ -28,7 +28,7 @@ def create_user():
     return user_schema.dump(created_user), 201
 
 
-@user_bp.route("/", methods=["PUT"])
+@user_bp.route("", methods=["PUT"])
 @jwt_required()
 def update_user():
     data = request.get_json()

@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  flask_web:
+    build:
+      context: .
+      args:
+        - BUILD_TARGET=production
+        - TARGET_PORT=8000
+        - COMMAND=run-production.sh
+        - ENTRYPOINT=entrypoint-production.sh
+    container_name: flask_web_prod
+    env_file:
+      - ./.envs/.production/flask
+      - ./.envs/.production/postgres
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: on-failure

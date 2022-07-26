@@ -31,6 +31,8 @@ class UserDAO(BaseDAO):
             user.first_name = data.get("first_name")
         if data.get("last_name"):
             user.last_name = data.get("last_name")
+        if data.get("sex"):
+            user.sex = data.get("sex")
         if data.get("date_of_birth"):
             user.date_of_birth = data.get("date_of_birth")
         if data.get("password"):

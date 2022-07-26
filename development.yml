@@ -8,8 +8,13 @@ services:
   flask:
     build:
       context: .
-      dockerfile: Dockerfile-development
-    container_name: flask
+      dockerfile: Dockerfile
+      args:
+        - BUILD_TARGET=development
+        - TARGET_PORT=5000
+        - COMMAND=run-development.sh
+        - ENTRYPOINT=entrypoint-development.sh
+    container_name: flask_web_dev
     env_file:
       - ./.envs/.development/flask
       - ./.envs/.development/postgres
@@ -18,7 +23,9 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
+      - ./app:/srv/app
+      - ./migrations:/srv/migrations
+      # - ./.coverage:/srv/.coverage
     restart: on-failure
   postgres:
     image: postgres:alpine

@@ -20,4 +20,4 @@ while 1:
     else:
         break
 
-print("Database are ready!!")
+print("Database is ready!!")

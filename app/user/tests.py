@@ -21,12 +21,13 @@ def test_create_user(app_inst):  # noqa
         user_json = {
             "first_name": "ali",
             "last_name": "majed",
+            "sex": "m",
             "date_of_birth": date(1991, 3, 26),
             "email": "alimajed1991+3@gmail.com",
             "password": "password123",
         }
         req = c.post(
-            f"{BASE_URL}/api/user/",
+            f"{BASE_URL}/api/user",
             data=json.dumps(user_json, default=json_serial),
             headers=headers,
         )
@@ -36,7 +37,12 @@ def test_create_user(app_inst):  # noqa
 def test_user_sign_in(app_inst):  # noqa
     with app_inst.test_client() as c:
         user = UserModel(
-            "ali", "majed", date(1991, 3, 26), "alimajed1991+4@gmail.com", "password123"
+            "ali",
+            "majed",
+            "m",
+            date(1991, 3, 26),
+            "alimajed1991+4@gmail.com",
+            "password123",
         )
         user_dao.create_user(user)
         headers = {
@@ -55,7 +61,12 @@ def test_user_sign_in(app_inst):  # noqa
 def test_update_user(app_inst):  # noqa
     with app_inst.test_client() as c:
         user = UserModel(
-            "ali", "majed", date(1991, 3, 26), "alimajed1991+5@gmail.com", "password123"
+            "ali",
+            "majed",
+            "m",
+            date(1991, 3, 26),
+            "alimajed1991+5@gmail.com",
+            "password123",
         )
         user_dao.create_user(user)
         headers = {
@@ -73,11 +84,12 @@ def test_update_user(app_inst):  # noqa
         user_json = {
             "first_name": "ali",
             "last_name": "majed",
+            "sex": "m",
             "date_of_birth": date(1991, 3, 27),
             "password": "password",
         }
         unauthorized_req = c.put(
-            f"{BASE_URL}/api/user/",
+            f"{BASE_URL}/api/user",
             data=json.dumps(user_json, default=json_serial),
             headers=headers,
         )
@@ -87,7 +99,7 @@ def test_update_user(app_inst):  # noqa
         access_token = response["access_token"]
         headers["Authorization"] = f"Bearer {access_token}"
         req = c.put(
-            f"{BASE_URL}/api/user/",
+            f"{BASE_URL}/api/user",
             data=json.dumps(user_json, default=json_serial),
             headers=headers,
         )

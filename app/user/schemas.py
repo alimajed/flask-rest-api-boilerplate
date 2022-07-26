@@ -14,6 +14,7 @@ class UserSchema(BaseModelSchema):
 class UpdateUserSchema(BaseCustomSchema):
     first_name = fields.Str(required=False)
     last_name = fields.Str(required=False)
+    sex = fields.Str(required=False)
     date_of_birth = fields.Str(required=False)
     password = fields.Str(required=False)
 
